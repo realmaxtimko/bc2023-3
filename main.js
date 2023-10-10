@@ -24,8 +24,8 @@ fs.readFile('data.json', 'utf8', (err, data) => {
 
 // Функція для обробки та фільтрації даних
 function processData(data) {
-  // Фільтрація даних для значень ключа "parent" рівних "BS3_BanksLiab"
-  const filteredData = data.filter(item => item.parent === 'BS3_BanksLiab');
+  // Фільтрація даних для значень ключа "parent" рівних "BS3_BanksLiab" 
+  const filteredData = data.filter(item => item.parent === 'BS3_BanksLiab' && item.txten !== 'Amounts due to non-bank financial institutions' && item.txten !== 'Amounts due to individuals (including saving (deposit) certificates)' && item.txten !== 'Amounts due to corporates');
 
   // Створення рядків у вигляді <назва показника англійською>:<розмір>
   const resultStrings = filteredData.map(item => `${item.txten}:${item.value}`);
