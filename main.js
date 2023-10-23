@@ -1,35 +1,22 @@
-const fs = require('fs');
+//імпортує модуль файлової системи Node.js
+const fs = require("fs");
 
-// Читаня даних з файлу data.json
-fs.readFile('data.json', 'utf8', (err, data) => {
-  if (err) {
-    console.error(`Помилка при читанні файлу: ${err}`);
-    return;
-  }
+//Зчитуєм файл з розширенням json
+fs.readFile("data.json", (err, data) => {
+    if (err === null) {
+        let jsonData = JSON.parse(data);
+        const filteredData = jsonData.filter(entry => entry.parent === "BS3_BanksLiab");
+        const outputText = filteredData.map(entry => `${entry.txten}:${entry.value}`).join('\n');
 
-  const jsonData = JSON.parse(data);
-
-  // Обробка та фільтрація даних
-  const filteredData = processData(jsonData);
-
-  // Збереження результатів у файл output.txt
-  fs.writeFile('output.txt', filteredData, (err) => {
-    if (err) {
-      console.error(`Помилка при запису в файл: ${err}`);
+//Робим запис в текстовий файл
+        fs.writeFile('output.txt', outputText, (err) => {
+            if (err === null) {
+                console.log("Результат збережно в файл!");
+            } else {
+                console.log(`Помилка при записі в файл: ${err}`);
+            }
+        });
     } else {
-      console.log('Результати були збережені у файл output.txt.');
+        console.log(`Помилка при записі в файл: ${err}`);
     }
-  });
 });
-
-// Функція для обробки та фільтрації даних
-function processData(data) {
-  // Фільтрація даних для значень ключа "parent" рівних "BS3_BanksLiab" 
-  const filteredData = data.filter(item => item.parent === 'BS3_BanksLiab' && item.txten !== 'Amounts due to non-bank financial institutions' && item.txten !== 'Amounts due to individuals (including saving (deposit) certificates)' && item.txten !== 'Amounts due to corporates');
-
-  // Створення рядків у вигляді <назва показника англійською>:<розмір>
-  const resultStrings = filteredData.map(item => `${item.txten}:${item.value}`);
-
-  // Повернення результату як рядок з роздільниками нового рядка
-  return resultStrings.join('\n');
-}
